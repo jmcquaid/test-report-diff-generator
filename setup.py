@@ -11,9 +11,9 @@ config = {
     'author_email': 'jmmcquaid@yahoo.com',
     'version': '0.1',
     'install_requires': [],
-    'packages': ['testreportdiff'],
+    'packages': ['testreportdiffs'],
     'scripts': [],
-    'name': 'testreportdiff'
+    'name': 'test-report-diffs'
 }
 
 setup(**config)
