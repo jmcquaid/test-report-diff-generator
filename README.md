@@ -10,8 +10,10 @@ Linux/Unix OS. The project does not yet support windows file paths.
 
 Installation
 ------------
+```python
 git clone https://github.com/jmcquaid/test-report-diffs.git
 python setup.py install
+```
 
 Usage
 -----
