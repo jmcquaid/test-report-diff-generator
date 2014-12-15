@@ -4,14 +4,19 @@ import sys
 import argparse
 
 def get_report_paths_file_name():
-	"""
-	Get the file path supplied on the command line by user
-	"""
-	parser = argparse.ArgumentParser(description='Create diff report from multiple xunit report.xml files.')
-	parser.add_argument('report_paths_file', metavar='paths_file',
-                   help='A path to a file containing report.xml file paths.')
-	args = parser.parse_args()
-	return args.report_paths_file
+    """
+    Get the file path supplied on the command line by user. 
+    This file contains a list of file paths- for the unit test report files.
+    """
+    parser = argparse.ArgumentParser(
+        description='Create diff report from multiple xunit report.xml files.'
+        )
+    parser.add_argument(
+        'report_paths_file', 
+        metavar='paths_file',
+        help='A path to a file containing report.xml file paths.')
+    args = parser.parse_args()
+    return args.report_paths_file
 
 def clean_path_strings(file_paths):
     """
@@ -27,7 +32,8 @@ def clean_path_strings(file_paths):
 
 def get_directory_name(file_path_str):
     """
-    Return the name of the directory for the specified file path
+    Return the (base) folder name for the specified file path. This will
+    identify the report on the diff report.
     """
     return os.path.basename(os.path.dirname(file_path_str))
 
@@ -64,8 +70,11 @@ def create_diff_report(report_paths):
                 )
                 statuses.append(status)
             if not statuses_same(statuses):
-                html_str = html_str + '<tr><td>{0}</td><td>{1}</td>'.format(suite_name, 
-                                                                            test_case_name)    
+                html_str = html_str + '<tr><td>{0}</td><td>{1}</td>'.format(
+                    suite_name, 
+                    test_case_name
+                    )
+
                 for status in statuses:
                     html_str = html_str + '<td>{0}</td>\n'.format(status)
 
@@ -94,7 +103,8 @@ def get_test_case_names(suite_name):
     report_tree = report_trees[0]['xml_tree']
     doc = report_tree.getroot()
     test_case_names = []
-    for elem in doc.findall("testsuite[@name='{0}']/testcase".format(suite_name)):
+    for elem in doc.findall("testsuite[@name='{0}']/testcase".format(
+                    suite_name)):
         name = elem.get('name')
         test_case_names.append(name)
     return test_case_names
@@ -105,12 +115,27 @@ def test_case_passed(tree, suite_name, test_case_name):
     """
     doc = tree.getroot()
     test_case_names = []
-    test_case_elems = doc.findall("testsuite[@name='{0}']/testcase[@name='{1}']".format(suite_name, test_case_name))
+    test_case_elems = doc.findall(
+        "testsuite[@name='{0}']/testcase[@name='{1}']".format(
+            suite_name, 
+            test_case_name
+            )
+        )
+
     if len(test_case_elems) == 0:
-        raise Exception("Test case : {0} not in test suite: {1}!!!".format(test_case_name, suite_name))
+        raise Exception("Test case : {0} not in test suite: {1}!!!".format(
+            test_case_name, 
+            suite_name)
+        )
     
     # If test has failed there will be a failure elem in the testcase node
-    test_case_failure_elems = doc.findall("testsuite[@name='{0}']/testcase[@name='{1}']/failure".format(suite_name, test_case_name))
+    test_case_failure_elems = doc.findall(
+        "testsuite[@name='{0}']/testcase[@name='{1}']/failure".format(
+            suite_name, 
+            test_case_name
+            )
+        )
+
     if len(test_case_failure_elems) == 0:
         return True
     else:
@@ -133,7 +158,8 @@ def output_report(merged_report):
     """
     Output report string to file
     
-    :param merged_report: html representation of the summary of all xunit report.xml files. 
+    :param merged_report: html representation of the summary of all xunit 
+    report.xml files. 
     :type string
     """
     output_file = "regression_test_diffs.html" 
@@ -141,6 +167,7 @@ def output_report(merged_report):
         html_file.write(merged_report)
 
     print "Report generation complete- output file: {0}".format(output_file)
+
 def suite_passed(report_tree, suite_name):
     """
     Determine if suite passed
